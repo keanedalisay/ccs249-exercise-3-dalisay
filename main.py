@@ -49,7 +49,7 @@ class NGramModel:
       all_trigram_probs = self.__trigram_probabilities()
       gen_token_probs = [all_trigram_probs.get((gen_tokens[i-2], gen_tokens[i-1], gen_tokens[i])) for i in range(2, len(gen_tokens))]
     
-    print(gen_token_probs)
+    print(f'N-Gram Probabilities: {gen_token_probs}')
     perplexity = gen_token_probs[0]
     for i in range(1, len(gen_token_probs)):
       if (gen_token_probs[i] is not None):
@@ -72,8 +72,11 @@ def main():
   #   print(f"C({trigram[0] + ', ' + trigram[1]}) = {ngram_model.bigram_counts[trigram[0], trigram[1]]}\n")
 
   gen_text = ngram_model.generate_text('the', 10, 'trigram')
-  print(gen_text)
-  print(ngram_model.perplexity(gen_text, 'trigram'))
+  print(f'Tri-gram Generated Text: "{gen_text}"')
+  print(f'Tri-gram Perplexity: {ngram_model.perplexity(gen_text, "trigram")}\n')
+
+  print(f'Bi-gram Generated Text: "{gen_text}"')
+  print(f'Bi-gram Perplexity: {ngram_model.perplexity(gen_text)}')
 
 
 if __name__ == '__main__':
