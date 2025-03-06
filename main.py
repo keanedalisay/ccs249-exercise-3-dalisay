@@ -16,11 +16,11 @@ class NGramModel:
     self.unigram_counts = Counter(self.tokens)
 
   def __bigram_probabilities(self):
-    bigram_probs = { bigram: count / self.unigram_counts[bigram[0]] for bigram, count in self.bigram_counts.items() }
+    bigram_probs = { bigram: round(count / self.unigram_counts[bigram[0]], 3) for bigram, count in self.bigram_counts.items() }
     return bigram_probs
   
   def __trigram_probabilities(self):
-    trigram_probs = { trigram: count / self.bigram_counts[trigram[0], trigram[1]] for trigram, count in self.trigram_counts.items() }
+    trigram_probs = { trigram: round(count / self.bigram_counts[trigram[0], trigram[1]], 3) for trigram, count in self.trigram_counts.items() }
     return trigram_probs
 
   def generate_text(self, start_word, len = 10, n_gram = 'bigram'):
@@ -38,6 +38,24 @@ class NGramModel:
       current_word = next_word
     
     return ' '.join(generated_text)
+  
+  def perplexity(self, gen_text, n_gram = 'bigram'):
+    
+    gen_tokens = word_tokenize(gen_text, language='english')
+    if n_gram == 'bigram':
+      all_bigram_probs = self.__bigram_probabilities()
+      gen_token_probs = [all_bigram_probs.get((gen_tokens[i-1], gen_tokens[i])) for i in range(1, len(gen_tokens))]
+    else:
+      all_trigram_probs = self.__trigram_probabilities()
+      gen_token_probs = [all_trigram_probs.get((gen_tokens[i-2], gen_tokens[i-1], gen_tokens[i])) for i in range(2, len(gen_tokens))]
+    
+    print(gen_token_probs)
+    perplexity = gen_token_probs[0]
+    for i in range(1, len(gen_token_probs)):
+      if (gen_token_probs[i] is not None):
+        perplexity *= gen_token_probs[i]
+
+    return round(pow(perplexity, -1))
 
 
 def main():
@@ -53,7 +71,9 @@ def main():
   #   print(f"C({trigram[0] + ', ' + trigram[1] + ', ' + trigram[2]}) = {ngram_model.trigram_counts[trigram]}")
   #   print(f"C({trigram[0] + ', ' + trigram[1]}) = {ngram_model.bigram_counts[trigram[0], trigram[1]]}\n")
 
-  print(ngram_model.generate_text('the', 10, 'trigram'))
+  gen_text = ngram_model.generate_text('the', 10, 'trigram')
+  print(gen_text)
+  print(ngram_model.perplexity(gen_text, 'trigram'))
 
 
 if __name__ == '__main__':
