@@ -74,8 +74,6 @@ def main():
   gen_text = ngram_model.generate_text('the', 10, 'trigram')
   print(f'Tri-gram Generated Text: "{gen_text}"')
   print(f'Tri-gram Perplexity: {ngram_model.perplexity(gen_text, "trigram")}\n')
-
-  print(f'Bi-gram Generated Text: "{gen_text}"')
   print(f'Bi-gram Perplexity: {ngram_model.perplexity(gen_text)}')
 
 
