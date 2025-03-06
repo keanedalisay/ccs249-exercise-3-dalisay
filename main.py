@@ -30,7 +30,7 @@ class NGramModel:
     for _ in range(len):
       if (n_gram == 'bigram'):
         candidates = { k[1]: v for k, v in self.__bigram_probabilities().items() if k[0] == current_word }
-      else:
+      elif (n_gram == 'trigram'):
         candidates = { k[2]: v for k, v in self.__trigram_probabilities().items() if k[0] == current_word or k[1] == current_word }
 
       next_word = max(candidates, key=candidates.get)
@@ -45,7 +45,7 @@ class NGramModel:
     if n_gram == 'bigram':
       all_bigram_probs = self.__bigram_probabilities()
       gen_token_probs = [all_bigram_probs.get((gen_tokens[i-1], gen_tokens[i])) for i in range(1, len(gen_tokens))]
-    else:
+    elif n_gram == 'trigram':
       all_trigram_probs = self.__trigram_probabilities()
       gen_token_probs = [all_trigram_probs.get((gen_tokens[i-2], gen_tokens[i-1], gen_tokens[i])) for i in range(2, len(gen_tokens))]
     
